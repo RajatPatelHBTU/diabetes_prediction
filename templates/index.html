@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EndoPredict | AI Diabetes Risk Diagnostics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="glow-bg">
+      <div class="glow-1"></div>
+      <div class="glow-2"></div>
+    </div>
+
+    <div class="container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="logo-area">
+          <div class="logo-icon"></div>
+          <h1>EndoPredict</h1>
+        </div>
+        <p class="subtitle">
+          Clinical Diabetes Risk Prediction Powered by Machine Learning
+        </p>
+      </header>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <span class="stat-label">Model Pipeline</span>
+          <span class="stat-value">Random Forest</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pipeline Accuracy</span>
+          <span class="stat-value text-gradient">91.82%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">ROC-AUC Score</span>
+          <span class="stat-value">97.64%</span>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <!-- Form Card -->
+        <div class="glass-card form-section">
+          <h2><span class="step-num">1</span>Patient Metrics</h2>
+          <p class="card-desc">
+            Enter demographic information, clinical history, and laboratory
+            diagnostics.
+          </p>
+
+          <form id="predictionForm" autocomplete="off">
+            <div class="form-grid">
+              <!-- Gender -->
+              <div class="input-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                  <option value="" disabled selected>Select gender</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Age -->
+              <div class="input-group">
+                <label for="age">Age</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  min="0"
+                  max="120"
+                  placeholder="e.g. 45"
+                  required
+                />
+              </div>
+
+              <!-- BMI -->
+              <div class="input-group">
+                <label for="bmi">BMI (Body Mass Index)</label>
+                <input
+                  type="number"
+                  id="bmi"
+                  name="bmi"
+                  min="5"
+                  max="100"
+                  step="0.01"
+                  placeholder="e.g. 24.5"
+                  required
+                />
+              </div>
+
+              <!-- Smoking History -->
+              <div class="input-group">
+                <label for="smoking_history">Smoking History</label>
+                <select id="smoking_history" name="smoking_history" required>
+                  <option value="" disabled selected>
+                    Select smoking profile
+                  </option>
+                  <option value="never">Never Smoked</option>
+                  <option value="No Info">No Information</option>
+                  <option value="current">Current Smoker</option>
+                  <option value="former">Former Smoker</option>
+                  <option value="ever">Ever Smoked</option>
+                  <option value="not current">Not Current Smoker</option>
+                </select>
+              </div>
+
+              <!-- HbA1c Level -->
+              <div class="input-group">
+                <label for="HbA1c_level">HbA1c Level (%)</label>
+                <input
+                  type="number"
+                  id="HbA1c_level"
+                  name="HbA1c_level"
+                  min="3.0"
+                  max="15.0"
+                  step="0.01"
+                  placeholder="e.g. 5.7"
+                  required
+                />
+                <span class="input-tip"
+                  >Normal is < 5.7%, Diabetes is ≥ 6.5%</span
+                >
+              </div>
+
+              <!-- Blood Glucose Level -->
+              <div class="input-group">
+                <label for="blood_glucose_level">Blood Glucose (mg/dL)</label>
+                <input
+                  type="number"
+                  id="blood_glucose_level"
+                  name="blood_glucose_level"
+                  min="30"
+                  max="500"
+                  placeholder="e.g. 120"
+                  required
+                />
+                <span class="input-tip">Fasting normal is < 100 mg/dL</span>
+              </div>
+            </div>
+
+            <!-- Clinical Toggles -->
+            <div class="toggles-container">
+              <div class="toggle-card">
+                <input
+                  type="checkbox"
+                  id="hypertension"
+                  name="hypertension"
+                  value="1"
+                />
+                <label for="hypertension" class="toggle-label">
+                  <div class="checkbox-box"></div>
+                  <div class="toggle-text">
+                    <span class="toggle-title">Hypertension</span>
+                    <span class="toggle-sub"
+                      >Patient has chronic high blood pressure</span
+                    >
+                  </div>
+                </label>
+              </div>
+
+              <div class="toggle-card">
+                <input
+                  type="checkbox"
+                  id="heart_disease"
+                  name="heart_disease"
+                  value="1"
+                />
+                <label for="heart_disease" class="toggle-label">
+                  <div class="checkbox-box"></div>
+                  <div class="toggle-text">
+                    <span class="toggle-title">Heart Disease</span>
+                    <span class="toggle-sub"
+                      >Patient has cardiovascular condition history</span
+                    >
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btnSubmit">
+              <span class="btn-text">Run Diagnostic Evaluation</span>
+              <div class="loader" id="btnLoader"></div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Results Card -->
+        <div class="glass-card result-section" id="resultCard">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon"></div>
+            <h3>Diagnostic Diagnostics</h3>
+            <p>
+              Enter patient data and click the "Run Diagnostic Evaluation"
+              button to trigger predictive analytics.
+            </p>
+          </div>
+
+          <div class="results-content hidden" id="resultsContent">
+            <h2><span class="step-num">2</span>Risk Profile</h2>
+
+            <!-- Circular Risk Gauge -->
+            <div class="gauge-wrapper">
+              <div class="gauge">
+                <svg class="gauge-ring" width="220" height="220">
+                  <circle class="gauge-bg" cx="110" cy="110" r="95"></circle>
+                  <circle
+                    class="gauge-fill"
+                    id="gaugeFill"
+                    cx="110"
+                    cy="110"
+                    r="95"
+                  ></circle>
+                </svg>
+                <div class="gauge-center">
+                  <span class="gauge-val" id="riskPct">0%</span>
+                  <span class="gauge-label" id="riskLevelLabel">LOW RISK</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Diagnosis Display -->
+            <div class="risk-summary" id="riskSummaryBox">
+              <h4 id="summaryHeading">Normal Range Detected</h4>
+              <p id="summaryText">
+                The machine learning model projects a low probability of
+                diabetes clinical presence based on the parameters provided.
+              </p>
+            </div>
+
+            <!-- Recommendations List -->
+            <div class="recommendations">
+              <h4>Recommended Actions</h4>
+              <ul id="recommendationList">
+                <!-- Populated dynamically by script.js -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="app-footer">
+        <p>
+          EndoPredict is an AI diagnostic assistant. It does not replace
+          professional medical evaluations.
+        </p>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
